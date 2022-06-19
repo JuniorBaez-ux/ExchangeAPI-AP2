@@ -4,10 +4,10 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.exchangeapiap2.ui.theme.ExchangeApiAp2Theme
@@ -47,12 +48,34 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    ExchangeListScreen()
                 }
             }
         }
     }
 }
+
+@Composable
+fun ExchangeListScreen(
+    viewModel: ExchangeViewModel = hiltViewModel()
+) {
+
+    val state = viewModel.state.value
+
+    Column(modifier = Modifier.fillMaxSize()) {
+        LazyColumn(modifier = Modifier.fillMaxSize()){
+            items( state.coins){ exchange ->
+                ExchangeItem(exchange = exchange, {})
+            }
+        }
+
+        if (state.isLoading)
+            CircularProgressIndicator()
+
+    }
+
+}
+
 @Composable
 fun ExchangeItem(
     exchange:ExchangeDto,
@@ -112,13 +135,13 @@ interface ExchangeApi {
 class ExchangeRepository @Inject constructor(
     private val api: ExchangeApi
 ) {
-    fun getCoins(): Flow<Resource<List<ExchangeDto>>> = flow {
+    fun getExchanges(): Flow<Resource<List<ExchangeDto>>> = flow {
         try {
             emit(Resource.Loading()) //indicar que estamos cargando
 
-            val coins = api.getCoins() //descarga las monedas de internet, se supone quedemora algo
+            val exchanges = api.getCoins() //descarga las monedas de internet, se supone quedemora algo
 
-            emit(Resource.Success(coins)) //indicar que se cargo correctamente y pasarle las monedas
+            emit(Resource.Success(exchanges)) //indicar que se cargo correctamente y pasarle las monedas
         } catch (e: HttpException) {
             //error general HTTP
             emit(Resource.Error(e.message ?: "Error HTTP GENERAL"))
@@ -144,7 +167,7 @@ class ExchangeViewModel @Inject constructor(
     val state: State<CoinListState> = _state
 
     init {
-        exchangeRepository.getCoins().onEach { result ->
+        exchangeRepository.getExchanges().onEach { result ->
             when (result) {
                 is Resource.Loading -> {
                     _state.value = CoinListState(isLoading = true)
