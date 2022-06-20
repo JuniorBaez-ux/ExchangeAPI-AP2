@@ -79,21 +79,21 @@ fun ExchangeItem(
             overflow = TextOverflow.Ellipsis
         )
         Text(
-            text = exchange.description,
+            text = exchange.volume_usd,
             style = MaterialTheme.typography.body1,
             overflow = TextOverflow.Ellipsis
         )
 
         Text(
-            text = if(exchange.is_active) "Activa" else "Inactiva",
-            color = if(exchange.is_active) Color.Green else Color.Red ,
+            text = if(exchange.updated == "Recently") "Activa" else "Inactiva",
+            color = if(exchange.updated == "Recently") Color.Green else Color.Red ,
             fontStyle = FontStyle.Italic,
             style = MaterialTheme.typography.body2,
             modifier = Modifier.align(Alignment.CenterVertically)
         )
 
         Text(
-            text = exchange.last_updated,
+            text = exchange.updated,
             style = MaterialTheme.typography.overline,
             overflow = TextOverflow.Ellipsis
         )
