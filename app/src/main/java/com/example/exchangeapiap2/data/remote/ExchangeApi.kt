@@ -6,7 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface ExchangeApi {
-    @GET("/api/exchanges/")
+    @GET("/v1/exchanges")
     suspend fun getExchange(): List<ExchangeDto>
 
     @GET("/v1/exchanges/{exchangeId}")
