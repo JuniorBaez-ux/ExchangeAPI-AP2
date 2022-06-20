@@ -68,35 +68,37 @@ fun ExchangeItem(
     exchange:ExchangeDto,
     onClick : (ExchangeDto) -> Unit
 ) {
-    Row(modifier = Modifier
+    Column(modifier = Modifier
         .fillMaxWidth()
         .clickable { onClick(exchange) }
         .padding(16.dp)
     ) {
         Text(
             text = exchange.name,
-            style = MaterialTheme.typography.subtitle1,
-            overflow = TextOverflow.Ellipsis
-        )
-        Text(
-            text = exchange.volume_usd,
-            style = MaterialTheme.typography.body1,
+            style = MaterialTheme.typography.h5,
             overflow = TextOverflow.Ellipsis
         )
 
-        Text(
-            text = if(exchange.updated == "Recently") "Activa" else "Inactiva",
-            color = if(exchange.updated == "Recently") Color.Green else Color.Red ,
-            fontStyle = FontStyle.Italic,
-            style = MaterialTheme.typography.body2,
-            modifier = Modifier.align(Alignment.CenterVertically)
-        )
+        Text(text =  "${exchange.description}" ,
+            style = MaterialTheme.typography.body2,)
 
-        Text(
-            text = exchange.updated,
-            style = MaterialTheme.typography.overline,
-            overflow = TextOverflow.Ellipsis
-        )
+        Row(modifier = Modifier.fillMaxWidth()
+            .height(30.dp).padding(2.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = if(exchange.active) "Activa" else "Inactiva",
+                color = if(exchange.active) Color.Green else Color.Red ,
+                fontStyle = FontStyle.Italic,
+                style = MaterialTheme.typography.body2,
+            )
+
+            Text(
+                text = exchange.last_updated,
+
+                )
+        }
+
     }
 
 }
