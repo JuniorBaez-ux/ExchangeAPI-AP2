@@ -1,7 +1,7 @@
 package com.example.exchangeapiap2.di
 
-import com.example.exchangeapiap2.ExchangeApi
-import com.example.exchangeapiap2.ExchangeRepository
+import com.example.exchangeapiap2.data.remote.ExchangeApi
+import com.example.exchangeapiap2.repository.ExchangeRepository
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -40,3 +40,4 @@ object AppModule {
         return ExchangeRepository(coinApi)
     }
 }
+
